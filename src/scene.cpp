@@ -19,7 +19,7 @@ namespace mt
 		m_points = new Point[200000];
 
 		double r = 1;
-		for(double fi = 0; fi < 6.28; fi += 0.01)
+		for (double fi = 0; fi < 6.28; fi += 0.01)
 			for (double teta = 0; teta < 1.57; teta += 0.01)
 			{
 				m_points[m_size].x = r * sin(teta) * cos(fi);

@@ -91,26 +91,26 @@ namespace mt
 		}
 	}
 
-	void Camera::dX(double d) 
+	void Camera::dX(double d)
 	{
 		m_position.x += d * cos(-m_angles.pitch);
 		m_position.y += 0;
 		m_position.z += d * sin(-m_angles.pitch);
 	}
 
-	void Camera::dZ(double d) 
+	void Camera::dZ(double d)
 	{
 		m_position.x += d * sin(m_angles.pitch);
 		m_position.y += d * sin(m_angles.roll);
 		m_position.z += d * cos(m_angles.pitch);
 	}
 
-	void Camera::dRoll(double droll) 
+	void Camera::dRoll(double droll)
 	{
 		m_angles.roll += droll;
 	}
 
-	void Camera::dPitch(double dpitch) 
+	void Camera::dPitch(double dpitch)
 	{
 		m_angles.pitch += dpitch;
 	}
