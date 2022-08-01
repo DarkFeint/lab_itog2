@@ -1,8 +1,7 @@
 #pragma once
 #include <iostream>
 
-namespace mt::math
-{
+
 	// MY_DEBUG определена
 	//#define MY_DEBUG 
 
@@ -203,4 +202,3 @@ namespace mt::math
 	using Mat22d = Matrix<double, 2, 2>;
 	using Mat33d = Matrix<double, 3, 3>;
 	using Vec3d = Matrix<double, 3, 1>;
-}

@@ -1,7 +1,7 @@
 #include <scene.hpp>
 
-namespace mt
-{
+
+
 	Scene::Scene(int width, int height)
 	{
 		m_width = width;
@@ -11,12 +11,12 @@ namespace mt
 		m_texture->create(m_width, m_height);
 		m_sprite = std::make_unique<sf::Sprite>(*m_texture);
 
-		Intrinsic intrinsic = { 960.0, 540.0, 960.0, 540.0 };
+		Intrinsic intrinsic = { double(m_width/2),(double)(m_height/2), (double)(m_width/2), (double)(m_height/2) };
 		Point position = { 0.0, 0.0, 0.0 };
 		Angles angles = { 0.0,0.0,0.0 };
 		m_camera = std::make_unique<Camera>(m_width, m_height, intrinsic, position, angles);
 
-		m_points = new Point[200000];
+		/*m_points = new Point[200000];
 
 		double r = 1;
 		for (double fi = 0; fi < 6.28; fi += 0.01)
@@ -26,17 +26,22 @@ namespace mt
 				m_points[m_size].y = r * sin(teta) * sin(fi) + 5;
 				m_points[m_size].z = r * cos(teta);
 				m_size++;
-			}
+			}*/
+
+		Point position_cube = {5.0, 7.0, 0.0};
+		double side = 1;
+
+		 cube1 = std::make_unique<Cube>(side, position_cube);
+
 	}
 	Scene::~Scene()
 	{
-		if (m_points != nullptr)
-			delete[] m_points;
+		
 	}
 
 	void Scene::LifeCycle()
 	{
-		double y0 = 1;
+		
 
 		while (m_window->isOpen()) {
 			sf::Event event;
@@ -77,23 +82,30 @@ namespace mt
 				m_camera->dRoll(0.02);
 			}
 
-			y0 += 0.02;
+			
+			
+			
+				cube1->Move();
+			
+			
+			/*y0 += 0.02;
 			m_size = 0;
 			double r = 1;
 			for (double fi = 0; fi < 6.28; fi += 0.01)
 				for (double teta = 0; teta < 1.57; teta += 0.01)
 				{
 					m_points[m_size].x = r * sin(teta) * cos(fi);
-					m_points[m_size].y = r * sin(teta) * sin(fi) + y0;
+					m_points[m_size].y = r * sin(teta) * sin(fi);
 					m_points[m_size].z = r * cos(teta);
 					m_size++;
 				}
+				*/
 
 			// Проецирование точек
-			for (int i = 0; i < m_size; i++)
-				m_camera->ProjectPoint(m_points[i], { 255, 0 ,0, 255 });
+			for (int i = 0; i < cube1->GetSize(); i++)
+				m_camera->ProjectPoint(cube1->GetPoints(i), { 255, 0 ,0, 255 });
 
-			m_texture->update((uint8_t*)m_camera->Picture(), 1920, 1080, 0, 0);
+			m_texture->update((uint8_t*)m_camera->Picture(), m_width, m_height, 0, 0);
 			m_camera->Clear();
 
 
@@ -104,4 +116,3 @@ namespace mt
 
 		}
 	}
-}

@@ -1,9 +1,7 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <camera.hpp>
+#include <Equilateral_shapes.hpp>
 
-namespace mt
-{
+
 	class Scene
 	{
 	public:
@@ -21,7 +19,6 @@ namespace mt
 		std::unique_ptr<sf::Texture> m_texture;
 		std::unique_ptr<sf::Sprite> m_sprite;
 
-		Point* m_points = nullptr;
-		int m_size = 0;
+		std::unique_ptr<Cube> cube1;
+
 	};
-}

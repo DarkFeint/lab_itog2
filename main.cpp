@@ -1,9 +1,9 @@
-﻿#include <SFML/Graphics.hpp>
-#include <Scene.hpp>
+﻿
+#include <scene.hpp>
 
 int main()
 {
-	mt::Scene scene(1920, 1080);
+	Scene scene(1280, 720);
 	scene.LifeCycle();
 
 	return 0;

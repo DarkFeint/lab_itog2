@@ -1,8 +1,9 @@
 #pragma once
 #include <iostream>
+#include <matrix.hpp>
+#include <SFML/Graphics.hpp>
 
-namespace mt
-{
+
 	struct Point
 	{
 		double x, y, z;
@@ -48,4 +49,3 @@ namespace mt
 		Point m_position;
 		Angles m_angles;
 	};
-}

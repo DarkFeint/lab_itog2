@@ -1,10 +1,8 @@
 #include <camera.hpp>
-#include <matrix.hpp>
 
-namespace mt
-{
-	using math::Mat33d;
-	using math::Vec3d;
+
+
+	
 
 	Camera::Camera(int width, int height, Intrinsic intrinsic, Point position, Angles angles)
 	{
@@ -114,4 +112,3 @@ namespace mt
 	{
 		m_angles.pitch += dpitch;
 	}
-}
