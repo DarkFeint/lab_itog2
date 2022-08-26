@@ -17,7 +17,7 @@ include_directories("inc/")
 include_directories("ext/SFML/include/")	
 link_directories("ext/SFML/lib/")
 
-add_executable("${PROJECT_NAME}" main.cpp  inc/matrix.hpp )
+add_executable("${PROJECT_NAME}" main.cpp  inc/matrix.hpp inc/solving.hpp src/solving.cpp )
 	
 						
 target_link_libraries("${PROJECT_NAME}" 
