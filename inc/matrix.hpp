@@ -1,204 +1,327 @@
 #pragma once
 #include <iostream>
+using namespace std;
 
-
-	// MY_DEBUG определена
-	//#define MY_DEBUG 
-
-	template<typename T, int N, int M>
-	struct MasWrapper
+class Matrix
+{
+public:
+	Matrix(int n, int m)
 	{
-		T mas[N][M];
-	};
-
-	template<typename T, int N, int M>
-	class Matrix
+		cout << "Constructor" << endl;
+		m_n = n;
+		m_m = m;
+		m_mat = new double* [m_n];
+		for (int i = 0; i < m_n; i++)
+		{
+			m_mat[i] = new double[m_m];
+		}
+	}
+	
+ 
+	Matrix(const Matrix& mat)
 	{
-	public:
-		// Конструктор
-		Matrix()
+		cout << "Copy constructor" << endl;
+		m_n = mat.m_n;
+		m_m = mat.m_m;
+		m_mat = new double* [m_n];
+		for (int i = 0; i < m_n; i++)
 		{
-#ifdef MY_DEBUG
-			std::cout << "Constructor" << std::endl;
-#endif
-			m_n = N;
-			m_m = M;
-			for (int i = 0; i < m_n; i++)
-				for (int j = 0; j < m_m; j++)
-					m_mat[i][j] = 0;
+			m_mat[i] = new double[m_m];
 		}
-
-		// Конструктор
-		Matrix(const T mas[N][M])
+		for (int i = 0; i < m_n; i++)
 		{
-#ifdef MY_DEBUG
-			std::cout << "Constructor" << std::endl;
-#endif
-			m_n = N;
-			m_m = M;
-			for (int i = 0; i < m_n; i++)
-				for (int j = 0; j < m_m; j++)
-					m_mat[i][j] = mas[i][j];
+			for (int j = 0; j < m_m; j++)
+			{
+				m_mat[i][j] = mat.m_mat[i][j];
+			}
 		}
-
-		// Конструктор
-		Matrix(const MasWrapper<T, N, M>& mas)
+	}
+	Matrix& operator=(const Matrix& mat)
+	{
+		cout << "Operator = " << endl;
+		m_n = mat.m_n;
+		m_m = mat.m_m;
+		for (int i = 0; i < m_n; i++)
 		{
-#ifdef MY_DEBUG
-			std::cout << "Constructor" << std::endl;
-#endif
-			m_n = N;
-			m_m = M;
-			for (int i = 0; i < m_n; i++)
-				for (int j = 0; j < m_m; j++)
-					m_mat[i][j] = mas.mas[i][j];
+			for (int j = 0; j < m_m; j++)
+			{
+				m_mat[i][j] = mat.m_mat[i][j];
+			}
 		}
-
-		// Конструктор копирования
-		Matrix(const Matrix<T, N, M>& mat)
+		return *this;
+	}
+	Matrix operator+(const Matrix& mat)
+	{
+		cout << "Operator+" << endl;
+		Matrix tmp(m_n, m_m);
+		for (int i = 0; i < m_n; i++)
 		{
-#ifdef MY_DEBUG
-			std::cout << "Copy constructor" << std::endl;
-#endif
-
-			m_n = mat.m_n;
-			m_m = mat.m_m;
-
-			for (int i = 0; i < m_n; i++)
-				for (int j = 0; j < m_m; j++)
-					m_mat[i][j] = mat.m_mat[i][j];
+			for (int j = 0; j < m_m; j++)
+			{
+				tmp.m_mat[i][j] = m_mat[i][j] + mat.m_mat[i][j];
+			}
 		}
-
-		int getN() const { return m_n; }
-		int getM() const { return m_m; }
-		T get(int i, int j) const { return m_mat[i][j]; }
-		void set(int i, int j, T data) { m_mat[i][j] = data; }
-
-		// Присваивание
-		template<typename T, int N, int M>
-		Matrix<T, N, M>& operator=(const Matrix<T, N, M>& mat)
+		return tmp;
+	}
+	Matrix operator-(const Matrix& mat)
+	{
+		cout << "Operator-" << endl;
+		Matrix tmp(m_n, m_m);
+		for (int i = 0; i < m_n; i++)
 		{
-#ifdef MY_DEBUG
-			std::cout << "Operator =" << std::endl;
-#endif
-
-			m_n = mat.getN();
-			m_m = mat.getM();
-
-			for (int i = 0; i < m_n; i++)
-				for (int j = 0; j < m_m; j++)
-					m_mat[i][j] = mat.get(i, j);
-
-			return *this;
+			for (int j = 0; j < m_m; j++)
+			{
+				tmp.m_mat[i][j] = m_mat[i][j] - mat.m_mat[i][j];
+			}
 		}
+		return tmp;
+	}
 
-		// Оператор сложения
-		template<typename T, int N, int M>
-		Matrix<T, N, M> operator+(const Matrix<T, N, M>& mat)
+	Matrix operator*(const Matrix& mat)
+	{
+		if (m_m == mat.m_n)
 		{
-#ifdef MY_DEBUG
-			std::cout << "operator+" << std::endl;
-#endif
-			Matrix<T, N, M> tmp;
-			for (int i = 0; i < m_n; i++)
-				for (int j = 0; j < m_m; j++)
-					tmp.m_mat[i][j] = m_mat[i][j] + mat.m_mat[i][j];
-			return tmp;
-		}
 
-		// Оператор вычитания
-		template<typename T, int N, int M>
-		Matrix<T, N, M> operator-(const Matrix<T, N, M>& mat)
-		{
-#ifdef MY_DEBUG
-			std::cout << "operator-" << std::endl;
-#endif
-			Matrix<T, N, M> tmp;
-			for (int i = 0; i < m_n; i++)
-				for (int j = 0; j < m_m; j++)
-					tmp.m_mat[i][j] = m_mat[i][j] - mat.m_mat[i][j];
-			return tmp;
-		}
-
-		// Оператор умножения
-		template<typename T, int N, int M>
-		Matrix<T, N, M> operator*(const Matrix<T, N, M>& mat)
-		{
-#ifdef MY_DEBUG
-			std::cout << "operator*" << std::endl;
-#endif
-			Matrix<T, N, M> tmp;
+			cout << "Operator*" << endl;
+			Matrix tmp(m_n, mat.m_m);
 
 			for (int i = 0; i < m_n; i++)
-				for (int j = 0; j < mat.getM(); j++)
+			{
+				for (int j = 0; j < mat.m_m; j++)
 				{
-					T sum = 0;
-					for (int k = 0; k < m_m; k++)
-						sum += m_mat[i][k] * mat.get(k, j);
-					tmp.set(i, j, sum);
+					tmp.m_mat[i][j] = 0;
 				}
+			}
 
+			for (int i = 0; i < m_n; i++)
+			{
+				for (int j = 0; j < mat.m_m; j++)
+				{
+					for (int k = 0; k < m_m; k++)
+					{
+						tmp.m_mat[i][j] += m_mat[i][k] * mat.m_mat[k][j];
+					}
+					
+				}
+			}
 			return tmp;
 		}
-
-		// Деструктор
-		~Matrix()
+		else
 		{
-#ifdef MY_DEBUG
-			std::cout << "Destructor" << std::endl;
-#endif
+			cout << "This operation is unavailable" << endl;
 		}
-
-		Matrix<T, N, M> inv()
-		{
-			Matrix<T, N, M> mat;
-			return mat;
-		}
-
-
-		int det()
-		{
-			return 1;
-		}
-
-		// friend - позволяет функции иметь доступ к private полям/методам класса
-		template<typename T, int N, int M>
-		friend std::istream& operator>>(std::istream& os, Matrix<T, N, M>& mat);
-
-		template<typename T, int N, int M>
-		friend std::ostream& operator<<(std::ostream& os, const Matrix<T, N, M>& mat);
-
-	private:
-		int m_n, m_m;
-		T m_mat[N][M];
-	};
-
-	// Перегрузка оператора ввода
-	template<typename T, int N, int M>
-	std::istream& operator>>(std::istream& in, Matrix<T, N, M>& mat)
-	{
-		for (int i = 0; i < mat.m_n; i++)
-			for (int j = 0; j < mat.m_m; j++)
-				in >> mat.m_mat[i][j];
-		return in;
 	}
 
-	// Перегрузка оператора вывода
-	template<typename T, int N, int M>
-	std::ostream& operator<<(std::ostream& out, const Matrix<T, N, M>& mat)
+	Matrix& get()
 	{
-		out << "Matrix " << mat.m_n << "x" << mat.m_m << std::endl;
-		for (int i = 0; i < mat.m_n; i++) {
-			for (int j = 0; j < mat.m_m; j++)
-				out << mat.m_mat[i][j] << " ";
-			out << std::endl;
-		}
-		return out;
+		return *this;
 	}
 
-	using Vec2i = Matrix<int, 2, 1>;	// Сокращенное удобное название
-	using Vec2d = Matrix<double, 2, 1>;
-	using Mat22i = Matrix<int, 2, 2>;
-	using Mat22d = Matrix<double, 2, 2>;
-	using Mat33d = Matrix<double, 3, 3>;
-	using Vec3d = Matrix<double, 3, 1>;
+	int Det2()
+	{
+		int det2 = -1;
+		
+		if ( (m_n != m_m) || ((m_n == m_m) && (m_n != 2)) )
+		{
+			cout << "This operation is unavailable" << endl;
+		}
+		else
+		{
+			det2 = m_mat[0][0] * m_mat[1][1] - m_mat[1][0] * m_mat[0][1];
+
+			return det2;
+		}
+		return det2;
+
+	}
+	int Det3()
+	{
+		
+		int det3 = -1;
+		
+		if ((m_n != m_m) || ((m_n == m_m) && (m_n != 3)))
+		{
+			cout << "This operation is unavailable" << endl;
+		
+		}
+		else
+		{
+			det3 = m_mat[0][0] * m_mat[1][1] * m_mat[2][2] + m_mat[0][1] * m_mat[1][2] * m_mat[2][0] + m_mat[1][0] * m_mat[2][1] * m_mat[0][2] - m_mat[2][0] * m_mat[1][1] * m_mat[0][2] - m_mat[0][1] * m_mat[1][0] * m_mat[2][2] - m_mat[2][1] * m_mat[1][2] * m_mat[2][0];
+			return det3;
+		}
+
+		return det3;
+	}
+
+	Matrix& Rev()
+	{
+		if (m_n == m_m)
+		{
+			if (m_n == 2)
+			{
+				
+				if (Det2() != 0)
+				{
+					Matrix tmp(m_n, m_m);
+					
+					tmp.m_mat[0][0] =  m_mat[1][1] / Det2();
+					tmp.m_mat[0][1] =  -m_mat[0][1] / Det2();
+					tmp.m_mat[1][0] =  -m_mat[1][0] / Det2();
+					tmp.m_mat[1][1] =  m_mat[0][0] / Det2();
+					return tmp;
+				}
+				else
+				{
+					cout << "This operation is unavailable" << endl;
+				}
+			}
+			else if (m_n == 3)
+			{
+				
+				if (Det3() != 0)
+				{
+					Matrix tmp(m_n, m_m);
+
+					tmp.m_mat[0][0] = (m_mat[1][1] * m_mat[2][2] - m_mat[1][2] * m_mat[2][1]) / Det3();
+					tmp.m_mat[0][1] = -(m_mat[0][1] * m_mat[2][2] - m_mat[2][1] * m_mat[0][2]) / Det3();
+					tmp.m_mat[0][2] = (m_mat[0][1] * m_mat[1][2] - m_mat[1][1] * m_mat[0][2]) / Det3();
+					tmp.m_mat[1][0] = -(m_mat[1][0] * m_mat[2][2] - m_mat[2][0] * m_mat[1][2]) / Det3();
+					tmp.m_mat[1][1] = (m_mat[0][0] * m_mat[2][2] - m_mat[2][0] * m_mat[0][2]) / Det3();
+					tmp.m_mat[1][2] = -(m_mat[0][0] * m_mat[1][2] - m_mat[1][0] * m_mat[0][2]) / Det3();
+					tmp.m_mat[2][0] = (m_mat[1][0] * m_mat[2][1] - m_mat[2][0] * m_mat[1][1]) / Det3();
+					tmp.m_mat[2][1] = -(m_mat[0][0] * m_mat[2][1] - m_mat[2][0] * m_mat[0][1]) / Det3();
+					tmp.m_mat[2][2] = (m_mat[0][0] * m_mat[1][1] - m_mat[1][0] * m_mat[0][1]) / Det3();
+
+					return tmp;
+				}
+				else
+				{
+					cout << "This operation is unavailable" << endl;
+				}
+			}
+			else
+			{
+				cout << "This operation is unavailable" << endl;
+			}
+		}
+		else
+		{
+			cout << "This operation is unavailable" << endl;
+		}
+	}
+
+	Matrix& Transpon()
+	{
+		
+		
+		int n = m_n;
+
+		int m = m_m;
+		
+		if (m_n > m_m)
+		{
+			
+			for (int i = 0; i < m_n; i++)
+			{
+				m_mat[i] = (double*) realloc(m_mat[i], n * sizeof(double));
+			}
+			for (int i = 0; i < m_n; i++)
+			{
+				for (int j = 0; j < m_n; j++)
+				{
+					
+					if (i < j)
+					{
+						swap(m_mat[i][j], m_mat[j][i]);
+					}
+				}
+			}
+
+			m_mat = (double**)realloc(m_mat, m * sizeof(double));
+
+			m_m = n;
+
+			m_n = m;
+		}
+		else if (m_m > m_n)
+		{
+			m_mat = (double**)realloc(m_mat, m * sizeof(double));
+
+			for (int i = 0; i < m_m; i++)
+			{
+				for (int j = 0; j < m_m; j++)
+				{
+					
+					if (i < j)
+					{
+						swap(m_mat[i][j], m_mat[j][i]);
+					}
+				}
+			}
+			for (int i = 0; i < m_n; i++)
+			{
+				m_mat[i] = (double*)realloc(m_mat[i], n * sizeof(double));
+				
+			}
+
+			m_n = m;
+			m_m = n;
+		}
+		else if (m_n == m_m)
+		{
+			
+			
+			for (int i = 0; i < m_n; i++)
+			{
+				for (int j = 0; j < m_n; j++)
+				{
+					
+					if (i < j)
+					{
+						swap(m_mat[i][j], m_mat[j][i]);
+					}
+				}
+			}
+		}
+
+		return get();
+	}
+	~Matrix()
+	{
+		cout << "Destructor" << endl;
+		for (int i = 0; i < m_n; i++)
+		{
+			delete[] m_mat[i];
+		}
+		delete m_mat;
+	}
+	friend istream& operator>>(istream& in, Matrix& mat);
+	friend ostream& operator<<(ostream& out, const Matrix& mat);
+private:
+	int m_n, m_m;
+	double** m_mat;
+};
+istream& operator>>(istream& in, Matrix& mat)
+{
+	for (int i = 0; i < mat.m_n; i++)
+	{
+		for (int j = 0; j < mat.m_m; j++)
+		{
+			in >> mat.m_mat[i][j];
+		}
+	}
+	return in;
+}
+ostream& operator<<(ostream& out, const Matrix& mat)
+{
+	out << "Matrix " << mat.m_n << "x" << mat.m_m << endl;
+	for (int i = 0; i < mat.m_n; i++)
+	{
+		for (int j = 0; j < mat.m_m; j++)
+		{
+			out << mat.m_mat[i][j] << " ";
+		}
+		out << endl;
+	}
+	return out;
+}
