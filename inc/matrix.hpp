@@ -7,7 +7,7 @@ class Matrix
 public:
 	Matrix(int n, int m)
 	{
-		cout << "Constructor" << endl;
+		//cout << "Constructor" << endl;
 		m_n = n;
 		m_m = m;
 		m_mat = new double* [m_n];
@@ -20,7 +20,7 @@ public:
  
 	Matrix(const Matrix& mat)
 	{
-		cout << "Copy constructor" << endl;
+		//cout << "Copy constructor" << endl;
 		m_n = mat.m_n;
 		m_m = mat.m_m;
 		m_mat = new double* [m_n];
@@ -38,7 +38,7 @@ public:
 	}
 	Matrix& operator=(const Matrix& mat)
 	{
-		cout << "Operator = " << endl;
+		//cout << "Operator = " << endl;
 		m_n = mat.m_n;
 		m_m = mat.m_m;
 		for (int i = 0; i < m_n; i++)
@@ -52,7 +52,7 @@ public:
 	}
 	Matrix operator+(const Matrix& mat)
 	{
-		cout << "Operator+" << endl;
+		//cout << "Operator+" << endl;
 		Matrix tmp(m_n, m_m);
 		for (int i = 0; i < m_n; i++)
 		{
@@ -65,7 +65,7 @@ public:
 	}
 	Matrix operator-(const Matrix& mat)
 	{
-		cout << "Operator-" << endl;
+		//cout << "Operator-" << endl;
 		Matrix tmp(m_n, m_m);
 		for (int i = 0; i < m_n; i++)
 		{
@@ -82,7 +82,7 @@ public:
 		if (m_m == mat.m_n)
 		{
 
-			cout << "Operator*" << endl;
+			//cout << "Operator*" << endl;
 			Matrix tmp(m_n, mat.m_m);
 
 			for (int i = 0; i < m_n; i++)
@@ -117,98 +117,141 @@ public:
 		return *this;
 	}
 
-	int Det2()
+	int getelement(int i, int j)
 	{
-		int det2 = -1;
-		
-		if ( (m_n != m_m) || ((m_n == m_m) && (m_n != 2)) )
-		{
-			cout << "This operation is unavailable" << endl;
-		}
-		else
-		{
-			det2 = m_mat[0][0] * m_mat[1][1] - m_mat[1][0] * m_mat[0][1];
-
-			return det2;
-		}
-		return det2;
-
-	}
-	int Det3()
-	{
-		
-		int det3 = -1;
-		
-		if ((m_n != m_m) || ((m_n == m_m) && (m_n != 3)))
-		{
-			cout << "This operation is unavailable" << endl;
-		
-		}
-		else
-		{
-			det3 = m_mat[0][0] * m_mat[1][1] * m_mat[2][2] + m_mat[0][1] * m_mat[1][2] * m_mat[2][0] + m_mat[1][0] * m_mat[2][1] * m_mat[0][2] - m_mat[2][0] * m_mat[1][1] * m_mat[0][2] - m_mat[0][1] * m_mat[1][0] * m_mat[2][2] - m_mat[2][1] * m_mat[1][2] * m_mat[2][0];
-			return det3;
-		}
-
-		return det3;
+		return m_mat[i][j];
 	}
 
-	Matrix& Rev()
+	Matrix Minor(int row, int col)
 	{
+		
 		if (m_n == m_m)
 		{
-			if (m_n == 2)
+			int size = m_n;
+
+			Matrix minor(size - 1, size - 1);
+
+			if (size > 1)
 			{
-				
-				if (Det2() != 0)
+
+				int offsetRow = 0;
+				int offsetCol = 0;
+				for (int i = 0; i < size - 1; i++)
 				{
-					Matrix tmp(m_n, m_m);
 					
-					tmp.m_mat[0][0] =  m_mat[1][1] / Det2();
-					tmp.m_mat[0][1] =  -m_mat[0][1] / Det2();
-					tmp.m_mat[1][0] =  -m_mat[1][0] / Det2();
-					tmp.m_mat[1][1] =  m_mat[0][0] / Det2();
-					return tmp;
-				}
-				else
-				{
-					cout << "This operation is unavailable" << endl;
-				}
-			}
-			else if (m_n == 3)
-			{
-				
-				if (Det3() != 0)
-				{
-					Matrix tmp(m_n, m_m);
+					if (i == row)
+					{
+						offsetRow = 1;
+					}
 
-					tmp.m_mat[0][0] = (m_mat[1][1] * m_mat[2][2] - m_mat[1][2] * m_mat[2][1]) / Det3();
-					tmp.m_mat[0][1] = -(m_mat[0][1] * m_mat[2][2] - m_mat[2][1] * m_mat[0][2]) / Det3();
-					tmp.m_mat[0][2] = (m_mat[0][1] * m_mat[1][2] - m_mat[1][1] * m_mat[0][2]) / Det3();
-					tmp.m_mat[1][0] = -(m_mat[1][0] * m_mat[2][2] - m_mat[2][0] * m_mat[1][2]) / Det3();
-					tmp.m_mat[1][1] = (m_mat[0][0] * m_mat[2][2] - m_mat[2][0] * m_mat[0][2]) / Det3();
-					tmp.m_mat[1][2] = -(m_mat[0][0] * m_mat[1][2] - m_mat[1][0] * m_mat[0][2]) / Det3();
-					tmp.m_mat[2][0] = (m_mat[1][0] * m_mat[2][1] - m_mat[2][0] * m_mat[1][1]) / Det3();
-					tmp.m_mat[2][1] = -(m_mat[0][0] * m_mat[2][1] - m_mat[2][0] * m_mat[0][1]) / Det3();
-					tmp.m_mat[2][2] = (m_mat[0][0] * m_mat[1][1] - m_mat[1][0] * m_mat[0][1]) / Det3();
+					offsetCol = 0;
+					for (int j = 0; j < size - 1; j++)
+					{
 
-					return tmp;
+						if (j == col)
+						{
+							offsetCol = 1;
+						}
+
+						minor.m_mat[i][j] = m_mat[i + offsetRow][j + offsetCol];
+					}
 				}
-				else
-				{
-					cout << "This operation is unavailable" << endl;
-				}
+
+				return minor;
 			}
 			else
 			{
-				cout << "This operation is unavailable" << endl;
+				return *this;
 			}
 		}
 		else
 		{
-			cout << "This operation is unavailable" << endl;
+			cout << "Это не квадратная матрица!" << endl;
 		}
 	}
+
+	double Determinant()
+	{
+		if (m_n == m_m)
+		{
+			int size = m_n;
+
+			double det = 0;
+			double sign = 1.0;
+			
+			
+			if (size == 1) 
+			{
+				return m_mat[0][0];
+			}
+			else if (size == 2) 
+			{
+				return m_mat[0][0] * m_mat[1][1] - m_mat[0][1] * m_mat[1][0];
+			}
+			else 
+			{
+				for (int j = 0; j < size; j++) 
+				{
+					
+					det = det + sign * m_mat[0][j] * Minor(0, j).Determinant();
+					
+					sign = -sign;
+				}
+
+			}
+
+			return det;
+		}
+		else
+		{
+			cout << "Это не квадратная матрица!" << endl;
+		}
+	}
+
+	Matrix Inversed()
+	{
+		if (m_n == m_m)
+		{
+			int size = m_n;
+
+			double det0 = Determinant();
+
+			if (det0 != 0)
+			{
+				Matrix inv(size, size);
+
+				double sign = 1.0;
+
+				for (int i = 0; i < size; i++)
+				{
+					for (int j = 0; j < size; j++)
+					{
+							if ((i + j) % 2 != 0)
+							{
+								inv.m_mat[j][i] = Minor(i, j).Determinant() * (-sign)/ Determinant();
+							}
+							else
+							{
+								inv.m_mat[j][i] = Minor(i, j).Determinant() * sign / Determinant();
+							}
+					}
+				}
+
+				return inv;
+			}
+			else
+			{
+				cout << "Это вырожденная матрица!" << endl;
+			}
+			
+		}
+		else
+		{
+			cout << "Это не квадратная матрица!" << endl;
+		}
+
+	}
+	
 
 	Matrix& Transpon()
 	{
@@ -286,9 +329,11 @@ public:
 
 		return get();
 	}
+
+	
 	~Matrix()
 	{
-		cout << "Destructor" << endl;
+		//cout << "Destructor" << endl;
 		for (int i = 0; i < m_n; i++)
 		{
 			delete[] m_mat[i];
@@ -297,6 +342,8 @@ public:
 	}
 	friend istream& operator>>(istream& in, Matrix& mat);
 	friend ostream& operator<<(ostream& out, const Matrix& mat);
+	friend int MatrixMethod();
+	friend int CramerMethod();
 private:
 	int m_n, m_m;
 	double** m_mat;
@@ -325,3 +372,4 @@ ostream& operator<<(ostream& out, const Matrix& mat)
 	}
 	return out;
 }
+
